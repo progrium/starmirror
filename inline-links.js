@@ -1,9 +1,7 @@
 import { syntaxTree } from "@codemirror/language";
-import { RangeSet, StateField } from '@codemirror/state';
-import {
-  Decoration,
-  EditorView
-} from "@codemirror/view";
+import { RangeSet } from '@codemirror/state';
+import { Decoration } from "@codemirror/view";
+import { newCollapsibleStateField } from "./collapsible-state-field";
 import { ReplacementWidget } from "./replacement-widget";
 
 export const inlineLinks = () => {
@@ -33,23 +31,9 @@ export const inlineLinks = () => {
     return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
   };
 
-  const linkField = StateField.define({
-    create(state) {
-      return decorate(state);
-    },
-    update(links, transaction) {
-      if (transaction.docChanged) {
-        return decorate(transaction.state);
-      }
-
-      return links.map(transaction.changes);
-    },
-    provide(field) {
-      return EditorView.decorations.from(field);
-    }
-  });
+  const stateField = newCollapsibleStateField(decorate);
 
   return [
-    linkField,
+    stateField,
   ]
 };
