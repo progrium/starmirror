@@ -12,8 +12,8 @@ import { autocompletion, completionKeymap, closeBracketsKeymap } from "@codemirr
 import { classHighlighter } from "@lezer/highlight"
 import { lintKeymap } from "@codemirror/lint"
 
-import { inlineImages } from './inline-images.js'
-import { inlineLinks } from './inline-links.js'
+import { inlineImages } from './ext/inline-images.js'
+import { inlineLinks } from './ext/inline-links.js'
 
 // https://esm.sh/{{npm_package}}@{{version}}
 
@@ -23,36 +23,38 @@ const minHeightEditor = EditorView.theme({
   ".cm-foldGutter span": { marginTop: "-2px !important", display: "block" },
 })
 
-const editor = new EditorView({
-  parent: document.body,
-  state: EditorState.create({
-    doc: initialDoc.value,
-    extensions: [
-      minHeightEditor,
-      highlightSpecialChars(),
-      
-      
-      indentOnInput(),
-      syntaxHighlighting(defaultHighlightStyle),
-      syntaxHighlighting(classHighlighter),
-      
-      autocompletion(),
-
-      keymap.of([
-        ...closeBracketsKeymap,
-        ...defaultKeymap,
-        ...searchKeymap,
-        ...historyKeymap,
-        ...foldKeymap,
-        ...completionKeymap,
-        ...lintKeymap
-      ]), 
-      markdown({
-        defaultCodeLanguage: javascript(),
-        base: markdownLanguage
-      }),
-      inlineImages(),
-      inlineLinks()
-    ]
-  })
-})
+export function createEditor(parent, doc) {
+  return new EditorView({
+    parent: parent,
+    state: EditorState.create({
+      doc: doc,
+      extensions: [
+        minHeightEditor,
+        highlightSpecialChars(),
+        
+        
+        indentOnInput(),
+        syntaxHighlighting(defaultHighlightStyle),
+        syntaxHighlighting(classHighlighter),
+        
+        autocompletion(),
+  
+        keymap.of([
+          ...closeBracketsKeymap,
+          ...defaultKeymap,
+          ...searchKeymap,
+          ...historyKeymap,
+          ...foldKeymap,
+          ...completionKeymap,
+          ...lintKeymap
+        ]), 
+        markdown({
+          defaultCodeLanguage: javascript(),
+          base: markdownLanguage
+        }),
+        inlineImages(),
+        inlineLinks()
+      ]
+    })
+  });  
+}

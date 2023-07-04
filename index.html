@@ -45,7 +45,10 @@ right here
 
 
 </textarea>
-<script src="editor.bundle.js"></script>
+<script type="module">
+  import { createEditor } from "./dist/starmirror.bundle.js";
+  createEditor(document.body, initialDoc.value);
+</script>
 </body>
 </html>
 
